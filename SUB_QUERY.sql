@@ -90,3 +90,54 @@ GROUP BY month_details
 
 --List the orders placed by customers who have placed an order with an amount greater than $500.
 SELECT customer_id,order_date from Orders WHERE amount>=500
+
+-- Create a new table to demonstrate nested sub query 
+
+CREATE TABLE StoreInventory (
+    store_id INT,
+    store_name VARCHAR(50),
+    product_name VARCHAR(50),
+    quantity INT,
+    price DECIMAL(10, 2)
+);
+
+INSERT INTO StoreInventory (store_id, store_name, product_name, quantity, price) VALUES
+(1, 'Store A', 'Product 1', 100, 9.99),
+(1, 'Store A', 'Product 2', 50, 19.99),
+(1, 'Store A', 'Product 3', 200, 4.99),
+(2, 'Store B', 'Product 1', 150, 9.99),
+(2, 'Store B', 'Product 4', 100, 14.99),
+(2, 'Store B', 'Product 5', 70, 29.99),
+(3, 'Store C', 'Product 2', 80, 19.99),
+(3, 'Store C', 'Product 6', 60, 24.99),
+(3, 'Store C', 'Product 7', 90, 34.99),
+(4, 'Store D', 'Product 3', 110, 4.99),
+(4, 'Store D', 'Product 8', 40, 44.99),
+(4, 'Store D', 'Product 9', 120, 54.99),
+(5, 'Store E', 'Product 1', 130, 9.99),
+(5, 'Store E', 'Product 10', 50, 64.99),
+(5, 'Store E', 'Product 11', 100, 74.99),
+(6, 'Store F', 'Product 4', 70, 14.99),
+(6, 'Store F', 'Product 12', 80, 84.99),
+(6, 'Store F', 'Product 13', 90, 94.99),
+(7, 'Store G', 'Product 5', 60, 29.99),
+(7, 'Store G', 'Product 14', 100, 104.99);
+
+
+SELECT * from `SQL_Learning`.`StoreInventory`
+-- Query to find total order of each store_id
+
+SELECT * From `SQL_Learning`.`StoreInventory`
+
+SELECT store_id, sum(quantity*price) as totalsale from `SQL_Learning`.`StoreInventory` as T1
+GROUP BY store_id
+
+SELECT AVG(totalsale) FROM (SELECT store_id, sum(quantity*price) as totalsale from `SQL_Learning`.`StoreInventory` as T1
+GROUP BY store_id) as T2
+
+-- Nested Query to find stores which are doing better sale than the average
+SELECT * from (SELECT store_id, sum(quantity*price) as totalsale from `SQL_Learning`.`StoreInventory` as T1
+GROUP BY store_id) as T3 JOIN (SELECT AVG(totalsale) as AVGSALE FROM (SELECT store_id, sum(quantity*price) as totalsale from `SQL_Learning`.`StoreInventory` as T1
+GROUP BY store_id) as T2) as T4 ON T3.totalsale > T4.AVGSALE
+
+
